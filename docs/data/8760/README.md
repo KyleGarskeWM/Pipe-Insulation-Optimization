@@ -1,60 +1,65 @@
-# CZ03 8760 Hourly Data Dictionary
+# 8760 Data Documentation
 
-This folder documents the hourly input workbook used by the pipe insulation
-optimization analysis. The canonical source file currently tracked here is
-`CZ03.xlsx`, with its hourly records on the `CZ03` worksheet.
+Upload documentation for the 8760 hourly data here.
 
-## Source workbook inventory
+Recommended materials include:
 
-| File | Worksheet | Records | Notes |
-| --- | --- | ---: | --- |
-| `docs/data/8760/CZ03.xlsx` | `CZ03` | 8760 hourly rows plus one header row | Canonical hourly weather/load source. |
-| `docs/data/8760/CZ03.xlsx` | `Read Me` | Reference notes | Includes compressor-speed lower-limit notes by ambient temperature band. |
+- Data source and version/date received.
+- Data dictionary or column definitions for the hourly file.
+- Units for each hourly field used by the analysis.
+- Notes on any preprocessing, normalization, or filtering applied before use.
+- QA/QC checks confirming the file contains exactly 8760 hourly records.
+- Known limitations, assumptions, or gaps in the data.
+- Change log for revised 8760 documentation.
 
-The analysis code consumes CSV files at runtime, so `CZ03.xlsx` should be
-exported to CSV without changing the canonical column names listed below. The
-CSV is expected to contain exactly 8760 hourly records.
+The analysis expects the actual 8760 CSV path to be supplied at runtime; this
+folder is intended for supporting documentation rather than generated outputs.
 
-## Canonical variable mapping
+## CZ03 workbook inventory
 
-Use this table when translating between the CZ03 workbook, regression workbook
-variables, and analysis configuration variables.
+The canonical source workbook currently tracked in this folder is
+`docs/data/8760/CZ03.xlsx`. Its hourly source data is on the `CZ03` worksheet,
+which contains one header row and 8760 hourly data rows. The workbook also has a
+`Read Me` worksheet with compressor-speed lower-limit notes by ambient
+temperature band.
 
-| CZ03 workbook column name | Regression variable | Analysis config variable | Unit | Expected range / domain | Notes |
+When using this workbook with the analysis code, export the `CZ03` worksheet to
+CSV and preserve the canonical source column names below unless the analysis
+configuration explicitly maps renamed columns.
+
+## Canonical CZ03 data dictionary
+
+Use this table as the canonical mapping between CZ03 source columns, regression
+workbook variables, and analysis configuration variables.
+
+| CZ03 source column / source | Regression variable | Analysis config variable | Unit | Expected range / domain | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `Environment:Site Outdoor Air Drybulb Temperature [F](Hourly)` | `DB` | `TDB` | degrees Fahrenheit (°F) | 9.365 to 98.06 observed in `CZ03.xlsx`; validate future CZ03 files as plausible CZ03 outdoor-air dry-bulb temperatures. | Hourly outdoor dry-bulb temperature. |
-| `Environment:Site Outdoor Air Wetbulb Temperature [F](Hourly)` | `WB` | `TWB` | degrees Fahrenheit (°F) | 7.43354848427929 to 76.6147413785666 observed in `CZ03.xlsx`; should not exceed dry-bulb temperature for the same hour under normal psychrometric conditions. | Hourly outdoor wet-bulb temperature. |
-| `Outdoor Line Length` | `O` | `OIL` | feet (ft) | Greater than or equal to 0 ft; project-specific fixed value or hourly/source value when populated. | Outdoor refrigerant or piping line length used by the regression equation. The tracked workbook header is present, but the current rows are blank, so supply this through the analysis configuration `static_values` or a populated CSV column. |
-| `Indoor Line Length` | `I` | `IIL` | feet (ft) | Greater than or equal to 0 ft; project-specific fixed value or hourly/source value when populated. | Indoor refrigerant or piping line length used by the regression equation. The tracked workbook header is present, but the current rows are blank, so supply this through `static_values` or a populated CSV column. |
-| `0 Capacity`, `0.25 Capacity`, `0.375 Capacity`, `0.50 Capacity`, `0.75 Capacity`, `1.00 Capacity` | `To` | `OIT` | inches (in.) of insulation thickness | One of 0, 0.25, 0.375, 0.50, 0.75, or 1.00 in. when using the workbook capacity/power result families; candidate values should remain within the regression-calibrated thickness domain. | Outdoor insulation thickness. In the regression/configuration layer this is a candidate input, not an hourly weather column. The workbook encodes thickness-specific output families in the result-column prefixes. |
-| `Indoor Insulation Thickness` | `Ti` | `IIT` | inches (in.) of insulation thickness | Greater than or equal to 0 in.; project-specific fixed value or candidate values within the regression-calibrated domain. | Indoor insulation thickness. The tracked workbook header is present, but the current rows are blank, so supply this through candidate values or a populated CSV column. |
-| `Total Heating Load` | `L` | `L` | load rate in the same capacity basis used by the regression, typically W for EnergyPlus-style hourly rates unless the regression workbook has been converted to IP units | 0 to 143332.52095513802 observed in `CZ03.xlsx`; must be greater than or equal to 0. | Hourly required heating load. The optimizer compares calculated capacity against `L * load.scale * (1 + load.capacity_margin)`. |
+| `Environment:Site Outdoor Air Drybulb Temperature [F](Hourly)` | `DB` | `TDB` | degrees Fahrenheit (°F) | 9.365 to 98.06 observed in `CZ03.xlsx`; future files should remain within plausible CZ03 outdoor dry-bulb conditions. | Hourly outdoor dry-bulb temperature. |
+| `Environment:Site Outdoor Air Wetbulb Temperature [F](Hourly)` | `WB` | `TWB` | degrees Fahrenheit (°F) | 7.43354848427929 to 76.6147413785666 observed in `CZ03.xlsx`; normally less than or equal to dry-bulb temperature for the same hour. | Hourly outdoor wet-bulb temperature. |
+| `Outdoor Line Length` or configuration `static_values.OIL` | `O` | `OIL` | feet (ft) | Greater than or equal to 0 ft; project-specific design value. | Outdoor line length. The tracked workbook has the header, but current hourly cells are blank, so provide a populated CSV column or a static config value. |
+| `Indoor Line Length` or configuration `static_values.IIL` | `I` | `IIL` | feet (ft) | Greater than or equal to 0 ft; project-specific design value. | Indoor line length. The tracked workbook has the header, but current hourly cells are blank, so provide a populated CSV column or a static config value. |
+| Outdoor insulation-thickness candidate; source workbook result prefixes `0`, `0.25`, `0.375`, `0.50`, `0.75`, and `1.00` | `To` | `OIT` | inches (in.) | Candidate value within the regression-calibrated domain; the tracked workbook result families cover 0 to 1.00 in. | Outdoor insulation thickness is a candidate/configuration input, not an hourly weather column. |
+| `Indoor Insulation Thickness`, candidate list, or configuration `static_values.IIT` | `Ti` | `IIT` | inches (in.) | Greater than or equal to 0 in. and within the regression-calibrated domain. | Indoor insulation thickness. The tracked workbook has the header, but current hourly cells are blank, so provide candidate/static values or a populated CSV column. |
+| `Total Heating Load` | `L` | `L` | Load rate in the same capacity basis used by the regression, typically W for EnergyPlus-style hourly rates unless converted elsewhere. | 0 to 143332.52095513802 observed in `CZ03.xlsx`; must be non-negative. | Hourly required heating load. The optimizer compares calculated capacity against `L * load.scale * (1 + load.capacity_margin)`. |
 
-## Additional CZ03 time columns
+## Additional CZ03 columns and units
 
-| CZ03 workbook column name | Unit | Expected range / domain | Notes |
+| CZ03 source column or family | Unit | Expected range / domain | Notes |
 | --- | --- | --- | --- |
-| `Month` | calendar month number | 1 to 12 | Calendar month for each hourly record. |
-| `Day` | calendar day number | 1 to 31 | Calendar day within month. |
-| ` Hour` | hour ending, local standard time | 1 to 24 | The source header includes a leading space. Preserve or explicitly map it when exporting to CSV. |
+| `Month` | Calendar month number | 1 to 12 | Calendar month for each hourly record. |
+| `Day` | Calendar day number | 1 to 31 | Calendar day within month. |
+| ` Hour` | Hour ending, local standard time | 1 to 24 | The source header includes a leading space. Preserve it or map it explicitly if used. |
+| `<thickness> Capacity` | Capacity rate in the same basis as `Total Heating Load`, typically W unless converted elsewhere. | Greater than or equal to 0 | Workbook result/validation family for prefixes `0`, `0.25`, `0.375`, `0.50`, `0.75`, and `1.00`; not required as an optimizer input. |
+| `<thickness> Power` | Electric power, typically W unless converted elsewhere. | Greater than or equal to 0 | Workbook result/validation family for prefixes `0`, `0.25`, `0.375`, `0.50`, `0.75`, and `1.00`; keep separate from hourly energy. |
+| `<thickness> Run Time` | Runtime fraction or duration as defined by the source workbook. | 0 to 1 for fractions, or greater than or equal to 0 for durations. | Confirm the source convention before calculation use. |
+| `<thickness> Energy` | Energy over the hourly reporting interval, typically Wh when power is W. | Greater than or equal to 0 | Derived or reported hourly energy associated with each thickness family. |
+| `0 Speed` | Compressor speed or normalized speed | Greater than or equal to 0 | Supporting source output; not a canonical optimizer input. |
 
-## Result columns and units
+## Analysis configuration notes
 
-The workbook also contains output/result families by insulation-thickness prefix:
-
-| CZ03 workbook column family | Unit | Expected range / domain | Notes |
-| --- | --- | --- | --- |
-| `<thickness> Capacity` | capacity rate in the same load basis as `Total Heating Load`, typically W unless converted by the regression workbook | Greater than or equal to 0 | Available prefixes are `0`, `0.25`, `0.375`, `0.50`, `0.75`, and `1.00`. These columns are source regression outputs or validation targets, not required hourly inputs to the optimizer unless used for QA. |
-| `<thickness> Power` | electric power, typically W unless converted by the regression workbook | Greater than or equal to 0 | Available prefixes are `0`, `0.25`, `0.375`, `0.50`, `0.75`, and `1.00`. Keep this unit separate from annual energy totals. |
-| `<thickness> Run Time` | runtime fraction or runtime duration as defined by the source workbook | 0 to 1 for fractions, or greater than or equal to 0 for durations | Confirm the source workbook convention before using these columns in calculations. |
-| `<thickness> Energy` | energy over the hourly reporting interval, typically Wh when power is W | Greater than or equal to 0 | Derived or reported hourly energy associated with each thickness family. |
-| `0 Speed` | compressor speed or normalized speed | Greater than or equal to 0 | Supporting source output; not a canonical optimizer input. |
-
-## Analysis configuration example
-
-A project configuration should map the canonical analysis variables to CZ03
-columns or provide static/candidate values. For the tracked workbook export, the
-hourly portion of `column_map` should use the canonical source columns:
+A project configuration should map hourly analysis variables to CZ03 columns and
+provide non-hourly variables through `candidates` or `static_values`. For an
+export of the tracked workbook, the hourly `column_map` should use:
 
 ```json
 {
@@ -73,21 +78,21 @@ hourly portion of `column_map` should use the canonical source columns:
 ```
 
 If `Outdoor Line Length`, `Indoor Line Length`, or `Indoor Insulation Thickness`
-remain blank in an exported CZ03 CSV, do not map them as hourly columns. Instead,
-provide the applicable values through configuration `static_values` and/or
-`candidates` so every regression variable has a numeric value at evaluation time.
+remain blank in the exported CSV, do not map those blank columns as hourly
+inputs. Provide the applicable numeric values through `static_values` and/or
+`candidates` instead.
 
 ## QA/QC checks
 
-Before running an optimization, confirm that the exported CZ03 CSV satisfies the
-following checks:
+Before running an optimization, confirm that:
 
-- Exactly 8760 data rows are present after the header row.
-- Temperature fields are numeric °F values and wet-bulb temperature is not above
+- The exported CSV contains exactly 8760 data rows after the header row.
+- Temperature fields are numeric °F values, and wet-bulb temperature is not above
   dry-bulb temperature for normal hourly records.
 - `Total Heating Load` is numeric and non-negative.
-- Line lengths are numeric and non-negative when supplied as columns.
+- Line lengths are numeric and non-negative when supplied as columns or static
+  values.
 - Insulation thickness candidates are numeric, non-negative, and within the
   regression-calibrated domain.
-- Power, capacity, load, and energy units are not mixed; any conversion is
-  documented in the project configuration and equation backup notes.
+- Power, capacity, load, and energy units are not mixed; document any conversion
+  in the project configuration and equation backup notes.
