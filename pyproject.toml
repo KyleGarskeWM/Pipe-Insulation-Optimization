@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pipe-insulation-optimization"
+version = "0.1.0"
+description = "CZ03 8760 hourly pipe insulation power and capacity optimization"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+analyze-cz03 = "pipe_insulation_optimization.analysis:main"
+
+[tool.setuptools.packages.find]
+include = ["pipe_insulation_optimization*"]

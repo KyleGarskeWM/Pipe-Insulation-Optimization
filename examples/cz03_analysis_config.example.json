@@ -1,0 +1,25 @@
+{
+  "output_prefix": "cz03_insulation_analysis",
+  "objective": "annual_power",
+  "column_map": {
+    "TDB": "DB Temperature",
+    "TWB": "WB Temperature",
+    "L": "load %",
+    "OIL": "Outdoor Insulation Length",
+    "IIL": "Indoor Insulation Length"
+  },
+  "static_values": {},
+  "candidates": {
+    "OIT": [0.5, 1.0, 1.5, 2.0],
+    "IIT": [0.5, 1.0, 1.5, 2.0]
+  },
+  "load": {
+    "column": "L",
+    "scale": 1.0,
+    "capacity_margin": 0.0
+  },
+  "equations": {
+    "power": "0.8 + 0.02*TDB + 0.01*TWB + 0.15*L - 0.10*OIT*OIL - 0.08*IIT*IIL",
+    "capacity": "100 - 0.30*TDB + 0.10*TWB + 2.0*OIT*OIL + 1.5*IIT*IIL"
+  }
+}
