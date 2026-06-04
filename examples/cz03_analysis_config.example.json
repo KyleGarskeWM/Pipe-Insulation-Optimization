@@ -10,8 +10,26 @@
   },
   "static_values": {},
   "candidates": {
-    "OIT": [0.5, 1.0, 1.5, 2.0],
-    "IIT": [0.5, 1.0, 1.5, 2.0]
+    "To": [0.0, 0.25, 0.375, 0.5, 0.75, 1.0],
+    "Ti": [0.0, 0.25, 0.375, 0.5, 0.75, 1.0]
+  },
+  "candidate_metadata": {
+    "To": {
+      "description": "Outdoor insulation thickness regression predictor. Keep as a candidate grid variable because CZ03 does not provide an hourly Outdoor Insulation Thickness field.",
+      "units": "inches",
+      "valid_range": [0.0, 1.0],
+      "source": "docs/equations/power-capacity/*_regression_results.xlsx Predictions sheet, To column",
+      "grid_variable": true,
+      "hourly_measurement": false
+    },
+    "Ti": {
+      "description": "Indoor insulation thickness regression predictor. Keep as a candidate grid variable because the CZ03 Indoor Insulation Thickness column is not populated with hourly values.",
+      "units": "inches",
+      "valid_range": [0.0, 1.0],
+      "source": "docs/equations/power-capacity/*_regression_results.xlsx Predictions sheet, Ti column",
+      "grid_variable": true,
+      "hourly_measurement": false
+    }
   },
   "load": {
     "column": "L",
@@ -19,7 +37,7 @@
     "capacity_margin": 0.0
   },
   "equations": {
-    "power": "0.8 + 0.02*TDB + 0.01*TWB + 0.15*L - 0.10*OIT*OIL - 0.08*IIT*IIL",
-    "capacity": "100 - 0.30*TDB + 0.10*TWB + 2.0*OIT*OIL + 1.5*IIT*IIL"
+    "power": "0.8 + 0.02*TDB + 0.01*TWB + 0.15*L - 0.10*To*OIL - 0.08*Ti*IIL",
+    "capacity": "100 - 0.30*TDB + 0.10*TWB + 2.0*To*OIL + 1.5*Ti*IIL"
   }
 }
