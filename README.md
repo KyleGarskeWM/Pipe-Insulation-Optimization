@@ -22,6 +22,12 @@ An editable starter configuration is available at
 `examples/cz03_analysis_config.example.json`. Replace the example equations with
 the equations from the results files before making engineering decisions.
 
+Supporting documentation can be uploaded under `docs/`: use
+`docs/data/8760/` for 8760 hourly data documentation and
+`docs/equations/power-capacity/` for backup documentation related to the data,
+derivations, assumptions, and validation records for the power and capacity
+equations.
+
 ## Equation variables
 
 The configuration is designed around these variables:
