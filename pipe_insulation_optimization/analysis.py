@@ -64,6 +64,7 @@ class AnalysisConfig:
     capacity_equation: str
     candidate_values: Mapping[str, list[float]]
     static_values: Mapping[str, float]
+    static_value_units: Mapping[str, str]
     load_column: str
     load_scale: float
     capacity_margin: float
@@ -93,6 +94,7 @@ class AnalysisConfig:
             capacity_equation=equations["capacity"],
             candidate_values=raw["candidates"],
             static_values=raw.get("static_values", {}),
+            static_value_units=raw.get("static_value_units", {}),
             load_column=load.get("column", "L"),
             load_scale=float(load.get("scale", 1.0)),
             capacity_margin=float(load.get("capacity_margin", 0.0)),
