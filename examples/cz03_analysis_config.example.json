@@ -4,6 +4,10 @@
   "column_map": {
     "TDB": "DB Temperature",
     "TWB": "WB Temperature",
+    "L": "Normalized Heating Load",
+    "HeatingLoad": "Total Heating Load",
+    "OIL": "Outdoor Insulation Length",
+    "IIL": "Indoor Insulation Length"
     "L": "load %"
   },
   "static_values": {
@@ -37,7 +41,7 @@
     }
   },
   "load": {
-    "column": "L",
+    "column": "HeatingLoad",
     "scale": 1.0,
     "capacity_margin": 0.0
   },

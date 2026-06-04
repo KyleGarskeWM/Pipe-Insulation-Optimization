@@ -16,7 +16,9 @@ lowest power objective.
    - `candidates`: insulation thickness values to test, typically `OIT` and
      `IIT`.
    - `static_values`: constants that are not hourly CZ03 columns.
-   - `load`: load variable, scaling, and optional capacity safety margin.
+   - `load`: load variable, scaling, and optional capacity safety margin. The
+     example config keeps raw `Total Heating Load` available as `HeatingLoad`
+     for this check while using normalized `L` in the regression equations.
 
 An editable starter configuration is available at
 `examples/cz03_analysis_config.example.json`. Replace the example equations with
@@ -47,7 +49,10 @@ The configuration is designed around these variables:
 - `IIT`: indoor insulation thickness candidate.
 - `OIL`: outdoor insulation length from CZ03 or `static_values`.
 - `IIL`: indoor insulation length from CZ03 or `static_values`.
-- `L`: load percentage or load requirement from CZ03.
+- `L`: dimensionless load fraction used by the regressions. For the supplied
+  CZ03 workbook, derive it from `Total Heating Load` in Btu/h as
+  `Total Heating Load / 143332.52095513802`; see
+  `docs/data/8760/cz03_load_mapping.md`.
 
 Equations may use arithmetic operators and these functions: `abs`, `acos`,
 `asin`, `atan`, `ceil`, `cos`, `exp`, `floor`, `log`, `log10`, `max`,
