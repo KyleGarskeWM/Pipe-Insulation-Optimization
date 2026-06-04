@@ -4,11 +4,16 @@
   "column_map": {
     "TDB": "DB Temperature",
     "TWB": "WB Temperature",
-    "L": "load %",
-    "OIL": "Outdoor Insulation Length",
-    "IIL": "Indoor Insulation Length"
+    "L": "load %"
   },
-  "static_values": {},
+  "static_values": {
+    "O": 100.0,
+    "I": 150.0
+  },
+  "static_value_units": {
+    "O": "ft",
+    "I": "ft"
+  },
   "candidates": {
     "To": [0.0, 0.25, 0.375, 0.5, 0.75, 1.0],
     "Ti": [0.0, 0.25, 0.375, 0.5, 0.75, 1.0]
@@ -37,7 +42,7 @@
     "capacity_margin": 0.0
   },
   "equations": {
-    "power": "0.8 + 0.02*TDB + 0.01*TWB + 0.15*L - 0.10*To*OIL - 0.08*Ti*IIL",
-    "capacity": "100 - 0.30*TDB + 0.10*TWB + 2.0*To*OIL + 1.5*Ti*IIL"
+    "power": "0.8 + 0.02*TDB + 0.01*TWB + 0.15*L - 0.10*OIT*O - 0.08*IIT*I",
+    "capacity": "100 - 0.30*TDB + 0.10*TWB + 2.0*OIT*O + 1.5*IIT*I"
   }
 }
