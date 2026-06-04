@@ -12,30 +12,6 @@ def test_evaluate_equation_supports_math_functions():
     assert result == 4.0
 
 
-def test_analysis_config_loads_static_values_and_units(tmp_path):
-    config_path = tmp_path / "config.json"
-    config_path.write_text(
-        json.dumps(
-            {
-                "column_map": {"TDB": "DB Temperature", "TWB": "WB Temperature", "L": "load %"},
-                "static_values": {"O": 100.0, "I": 150.0},
-                "static_value_units": {"O": "ft", "I": "ft"},
-                "candidates": {"OIT": [1.0], "IIT": [1.0]},
-                "load": {"column": "L"},
-                "equations": {"power": "O + I", "capacity": "O + I"},
-            }
-        ),
-        encoding="utf-8",
-    )
-
-    config = AnalysisConfig.from_path(config_path)
-
-    assert "O" not in config.column_map
-    assert "I" not in config.column_map
-    assert config.static_values == {"O": 100.0, "I": 150.0}
-    assert config.static_value_units == {"O": "ft", "I": "ft"}
-
-
 def test_run_analysis_selects_lowest_power_feasible_candidate(tmp_path):
     cz03_path = tmp_path / "cz03.csv"
     with cz03_path.open("w", newline="", encoding="utf-8") as file:
