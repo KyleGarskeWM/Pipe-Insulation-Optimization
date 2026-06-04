@@ -28,6 +28,14 @@ Supporting documentation can be uploaded under `docs/`: use
 derivations, assumptions, and validation records for the power and capacity
 equations.
 
+`docs/data/8760/CZ03.xlsx` is treated as an input dataset for applying existing
+regressions, not as a training source for new regressions. In sheet `CZ03`, the
+empty output columns from `0 Capacity` through `1.00 Energy` are not required by
+the application workflow and should not be used as regression targets. The
+existing regression outputs are maintained in
+`docs/equations/power-capacity/power_regression_results.xlsx` and
+`docs/equations/power-capacity/capacity_regression_results.xlsx`.
+
 ## Equation variables
 
 The configuration is designed around these variables:
